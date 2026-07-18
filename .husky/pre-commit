@@ -1,0 +1,5 @@
+bun format &&
+bun lint &&
+bun typecheck &&
+bun index &&
+git add INDEX.md
