@@ -53,6 +53,7 @@ export default antfu(
         "warn",
         {
           code: 70,
+          ignoreComments: true,
           ignoreStrings: true,
           ignoreTemplateLiterals: true,
         },

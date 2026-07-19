@@ -1,8 +1,7 @@
-// scripts/build-index.ts
 import fs from "node:fs"
 import path from "node:path"
 
-import type { Domain, Runtime } from "./utils"
+import type { Database, Domain, Runtime } from "./utils"
 
 import { domains } from "./utils"
 
@@ -11,6 +10,8 @@ const entries: {
   domain: Domain
   runtime: string
   tags: string
+  framework: string
+  database: Database
   path: string
 }[] = []
 
@@ -19,22 +20,32 @@ for (const domain of domains) {
   for (const runtime of fs.readdirSync(domain) as Domain[]) {
     const runtimeDir = path.join(domain, runtime)
     if (!fs.statSync(runtimeDir).isDirectory()) continue
-
     for (const name of fs.readdirSync(runtimeDir)) {
       const readmePath = path.join(runtimeDir, name, "README.md")
       if (!fs.existsSync(readmePath)) continue
-
       const content = fs.readFileSync(readmePath, "utf-8")
       const tags = content.match(/tags:\s*(.*)/)?.[1] ?? ""
+      const framework = content.match(/framework:\s*(.*)/)?.[1] ?? "-"
+      const database = (content.match(/database:\s*(.*)/)?.[1] ??
+        "-") as Database
+
       entries.push({
         name,
         domain,
         runtime,
         tags,
+        framework,
+        database,
         path: `${domain}/${runtime}/${name}`,
       })
     }
   }
+}
+
+// Builds a clean "(framework, db)" suffix, skipping any field that's "-"
+function formatMeta(framework: string, database: string): string {
+  const parts = [framework, database].filter(v => v && v !== "-")
+  return parts.length ? ` (${parts.join(", ")})` : ""
 }
 
 let out = `<!---------------------------------->
@@ -45,23 +56,20 @@ let out = `<!---------------------------------->
 
 for (const domain of domains) {
   out += `## ${domain}`
-
   const runtimes = [
     ...new Set(
       entries.filter(e => e.domain === domain).map(e => e.runtime)
     ),
   ] as Runtime[]
-
   for (const runtime of runtimes) {
     out += `\n\n### ${runtime}\n\n`
-
     for (const e of entries.filter(
       e => e.domain === domain && e.runtime === runtime
     )) {
-      out += `- [${e.name}](${e.path}/README.md) — ${e.tags}\n`
+      const meta = formatMeta(e.framework, e.database)
+      out += `- [${e.name}](${e.path}/README.md) — ${e.tags}${meta}\n`
     }
   }
-
   out += "\n"
 }
 

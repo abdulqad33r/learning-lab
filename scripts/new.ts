@@ -1,18 +1,22 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { isDomain, isRuntime, validRuntimes } from "./utils"
+import {
+  databases,
+  isDatabase,
+  isDomain,
+  isRuntime,
+  validRuntimes,
+} from "./utils"
 
-const [, , domain, runtime, name] = process.argv
-// e.g. bun run new frontend react context-api
-// e.g. bun run new backend bun rate-limiting
+const [, , domain, runtime, topic, framework, db] = process.argv
+// e.g. bun run new backend bun rate-limiting hono postgres
+// e.g. bun run new backend node rate-limiting express
 
-if (!domain || !runtime || !name || !isDomain(domain)) {
+if (!domain || !runtime || !topic || !isDomain(domain)) {
   console.error(
-    "Usage: bun new <frontend|backend> <runtime> <topic-name>"
+    "Usage: bun run new <frontend|backend> <runtime> <topic> [framework] [db]"
   )
-  console.error("  frontend runtimes: react, vanilla")
-  console.error("  backend runtimes: node, bun")
   process.exit(1)
 }
 
@@ -23,19 +27,33 @@ if (!isRuntime(domain, runtime)) {
   process.exit(1)
 }
 
-const dir = path.join(domain, runtime, name)
+if (db !== undefined && !isDatabase(db)) {
+  console.error(
+    `Invalid database "${db}". Use: ${databases.join(", ")}`
+  )
+  process.exit(1)
+}
+
+const nameParts = [topic, framework, db].filter(Boolean)
+const folderName = nameParts.join("-") // rate-limiting-hono-postgres
+
+const dir = path.join(domain, runtime, folderName)
 fs.mkdirSync(dir, { recursive: true })
 
-const ext = runtime === "react" ? "tsx" : "ts"
-const demoExt = domain === "backend" ? "ts" : ext
+const ext =
+  domain === "backend" ? "ts" : runtime === "react" ? "jsx" : "js"
 
 fs.writeFileSync(
   path.join(dir, "README.md"),
-  `# ${name}
+  `# ${topic}
 
-tags: ${domain}
+tags: ${domain}${framework ? `, ${framework}` : ""}${db ? `, ${db}` : ""}
 
 runtime: ${runtime}
+
+framework: ${framework ?? "-"}
+
+database: ${db ?? "-"}
 
 date: ${new Date().toISOString().slice(0, 10)}
 
@@ -43,12 +61,12 @@ date: ${new Date().toISOString().slice(0, 10)}
 
 ## Snippet
 
-See demo.${demoExt}
+See demo.${ext}
 
 ## When to use
 `
 )
 
-// fs.writeFileSync(path.join(dir, `demo.${demoExt}`), "")
+fs.writeFileSync(path.join(dir, `demo.${ext}`), "")
 
 console.log(`Created ${dir}`)
