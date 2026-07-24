@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+}
+
+p {
+  font-size: 20px;
+}
+
+input {
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 20px;
+  border-radius: 5px;
+
+  &.fetching {
+    outline: 2px solid lightblue;
+  }
+}

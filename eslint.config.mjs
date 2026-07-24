@@ -28,6 +28,10 @@ export default antfu(
       "antfu/no-top-level-await": "off",
       "antfu/top-level-function": "off",
 
+      "e18e/prefer-timer-args": "off",
+
+      "format/prettier": "off",
+
       "jsonc/comma-dangle": "off",
       "jsonc/sort-keys": "warn",
 
@@ -37,34 +41,24 @@ export default antfu(
       "node/prefer-global/process": "off",
 
       "one-var": "off",
+      // "perfectionist/sort-objects": ["warn"],
 
       "perfectionist/sort-imports": [
         "warn",
         { tsconfig: { rootDir: "." } },
       ],
-      // "perfectionist/sort-objects": ["warn"],
 
       // "sort-keys": "warn",
       "style/arrow-parens": ["warn", "as-needed"],
       "style/brace-style": "off",
-      "style/comma-dangle": "off",
-      "style/indent": "off",
-      "style/max-len": [
-        "warn",
-        {
-          code: 70,
-          ignoreComments: true,
-          ignoreStrings: true,
-          ignoreTemplateLiterals: true,
-        },
-      ],
+      "style/comma-dangle": ["warn", "only-multiline"],
+      "style/indent": ["warn", 2, { offsetTernaryExpressions: true }],
       "style/member-delimiter-style": [
         "error",
         { multiline: { delimiter: "none" } },
       ],
       "style/object-curly-newline": "off",
       "style/operator-linebreak": "off",
-      // "style/semi": "warn",
 
       "ts/consistent-type-definitions": "off",
     },

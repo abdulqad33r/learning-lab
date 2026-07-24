@@ -8,8 +8,11 @@
     "index": "bun scripts/build-index.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
+    "formatCheck": "prettier --c .",
+    "format": "prettier --w . --l",
     "typecheck": "tsc --noEmit",
+    "checkAll": "bun lint && bun formatCheck && bun typecheck",
+    "fixAll": "bun lint:fix && bun format",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -19,7 +22,8 @@
     "eslint": "^10.7.0",
     "eslint-plugin-format": "^2.0.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "prettier": "^3.9.6"
   },
   "peerDependencies": {
     "typescript": "^6.0.3"

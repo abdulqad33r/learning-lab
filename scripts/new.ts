@@ -41,7 +41,7 @@ const dir = path.join(domain, runtime, folderName)
 fs.mkdirSync(dir, { recursive: true })
 
 const ext =
-  domain === "backend" ? "ts" : runtime === "react" ? "jsx" : "js"
+  domain === "backend" ? "ts" : runtime === "react" ? "tsx" : "ts"
 
 fs.writeFileSync(
   path.join(dir, "README.md"),
@@ -67,6 +67,6 @@ See demo.${ext}
 `
 )
 
-fs.writeFileSync(path.join(dir, `demo.${ext}`), "")
+// fs.writeFileSync(path.join(dir, `demo.${ext}`), "")
 
 console.log(`Created ${dir}`)
