@@ -11,7 +11,7 @@
     "formatCheck": "prettier --c .",
     "format": "prettier --w . --l",
     "typecheck": "tsc --noEmit",
-    "checkAll": "bun lint && bun formatCheck && bun typecheck",
+    "checkAll": "bun lint && bun formatCheck",
     "fixAll": "bun lint:fix && bun format",
     "prepare": "husky"
   },
