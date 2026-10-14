@@ -2,7 +2,6 @@ import fs from "node:fs"
 import path from "node:path"
 
 import type { Database, Domain, Runtime } from "./utils"
-
 import { domains } from "./utils"
 
 const query = process.argv[2]
@@ -31,8 +30,9 @@ for (const domain of domains) {
       const content = fs.readFileSync(readmePath, "utf-8")
       const tags = content.match(/tags:\s*(.*)/)?.[1] ?? ""
       const framework = content.match(/framework:\s*(.*)/)?.[1] ?? "-"
-      const database = (content.match(/database:\s*(.*)/)?.[1] ??
-        "-") as Database | "-"
+      const database = (content.match(/database:\s*(.*)/)?.[1] ?? "-") as
+        | Database
+        | "-"
       const haystack =
         `${name} ${runtime} ${tags} ${framework} ${database}`.toLowerCase()
 

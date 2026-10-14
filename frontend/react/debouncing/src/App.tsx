@@ -26,8 +26,8 @@ function App() {
   return (
     <div>
       <p>
-        When the input border turns blue it fetches the results
-        otherwise it does nothing
+        When the input border turns blue it fetches the results otherwise it
+        does nothing
       </p>
 
       <input

@@ -1,0 +1,59 @@
+{
+  "code_actions_on_format": {
+    "source.organizeImports": true,
+    "source.fixAll.eslint": false,
+    "source.fixAll.biome": true,
+  },
+  "prettier": {
+    "allowed": false,
+  },
+  "formatter": {
+    "language_server": {
+      "name": "biome",
+    },
+  },
+  "languages": {
+    "JavaScript": {
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.eslint": false,
+        "source.fixAll.biome": true,
+      },
+    },
+    "TypeScript": {
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.eslint": false,
+        "source.fixAll.biome": true,
+      },
+    },
+    "JSON": {
+      "formatter": {
+        "language_server": {
+          "name": "biome",
+        },
+      },
+      "code_actions_on_format": {
+        "source.fixAll.eslint": false,
+        "source.fixAll.biome": true,
+      },
+    },
+  },
+
+  "lsp": {
+    "eslint": {
+      "enable_lsp_tasks": false,
+    },
+    "biome": {
+      "enable_lsp_tasks": true
+    }
+  },
+}

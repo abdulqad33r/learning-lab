@@ -1,3 +1,3 @@
-bun checkAll &&
+bun check &&
 bun index &&
 git add INDEX.md

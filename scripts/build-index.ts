@@ -2,7 +2,6 @@ import fs from "node:fs"
 import path from "node:path"
 
 import type { Database, Domain, Runtime } from "./utils"
-
 import { domains } from "./utils"
 
 const entries: {
@@ -57,9 +56,7 @@ let out = `<!---------------------------------->
 for (const domain of domains) {
   out += `## ${domain}`
   const runtimes = [
-    ...new Set(
-      entries.filter(e => e.domain === domain).map(e => e.runtime)
-    ),
+    ...new Set(entries.filter(e => e.domain === domain).map(e => e.runtime)),
   ] as Runtime[]
   for (const runtime of runtimes) {
     out += `\n\n### ${runtime}\n\n`

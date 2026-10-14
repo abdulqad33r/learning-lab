@@ -28,9 +28,7 @@ if (!isRuntime(domain, runtime)) {
 }
 
 if (db !== undefined && !isDatabase(db)) {
-  console.error(
-    `Invalid database "${db}". Use: ${databases.join(", ")}`
-  )
+  console.error(`Invalid database "${db}". Use: ${databases.join(", ")}`)
   process.exit(1)
 }
 
@@ -40,8 +38,7 @@ const folderName = nameParts.join("-") // rate-limiting-hono-postgres
 const dir = path.join(domain, runtime, folderName)
 fs.mkdirSync(dir, { recursive: true })
 
-const ext =
-  domain === "backend" ? "ts" : runtime === "react" ? "tsx" : "ts"
+const ext = domain === "backend" ? "ts" : runtime === "react" ? "tsx" : "ts"
 
 fs.writeFileSync(
   path.join(dir, "README.md"),
