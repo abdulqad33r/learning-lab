@@ -30,7 +30,7 @@ Each topic gets its own folder with a `README.md` (what it is, when to use it, t
 ## Usage
 
 ```bash
-bun new <frontend|backend> <runtime> <topic-name> [framework] [db]  # create a new topic
+bun new  # create a new topic when select the choices
 bun search <keyword>                               # find a topic by tag/runtime/name
 bun index                                          # regenerate INDEX.md
 ```
