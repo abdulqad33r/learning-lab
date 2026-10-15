@@ -39,6 +39,10 @@ const RESET_CSS = `* {
 html {
   color-scheme: light dark;
 }
+
+body {
+  margin: 0;
+}
 `
 
 type FrontendRuntime = Extract<Runtime, "react" | "vanilla">
