@@ -1,69 +1,82 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import {
-  databases,
-  isDatabase,
-  isDomain,
-  isRuntime,
-  validRuntimes,
-} from "./utils"
+import * as p from "@clack/prompts"
 
-const [, , domain, runtime, topic, framework, db] = process.argv
-// e.g. bun run new backend bun rate-limiting hono postgres
-// e.g. bun run new backend node rate-limiting express
+import { createBackendTopic } from "./helpers/backend"
+import { createFrontendTopic } from "./helpers/frontend"
+import type { Runtime } from "./utils"
+import { domains, validRuntimes } from "./utils"
 
-if (!domain || !runtime || !topic || !isDomain(domain)) {
-  console.error(
-    "Usage: bun run new <frontend|backend> <runtime> <topic> [framework] [db]"
-  )
-  process.exit(1)
+// Runtime types supported specifically by the frontend scaffolder.
+type FrontendRuntime = Extract<Runtime, "react" | "vanilla">
+
+// Runtime types supported specifically by the backend topic creator.
+type BackendRuntime = Extract<Runtime, "node" | "bun">
+
+// Ask the questions shared by frontend and backend topics.
+const promptCommonOptions = async () => {
+  const domain = await p.select({
+    message: "Domain?",
+    options: domains.map(value => ({
+      value,
+      label: value,
+    })),
+  })
+
+  if (p.isCancel(domain)) return p.cancel("Cancelled")
+
+  const runtime = await p.select({
+    message: "Runtime?",
+    options: validRuntimes[domain].map(value => ({
+      value,
+      label: value,
+    })),
+  })
+
+  if (p.isCancel(runtime)) return p.cancel("Cancelled")
+
+  const topic = await p.text({
+    message: "Topic name?",
+    placeholder: "e.g. rate-limiting",
+    validate: value => {
+      if (!value) return "Topic name is required"
+
+      // Check the topic path before collecting more options.
+      const dir = path.join(domain, runtime, value)
+
+      if (fs.existsSync(dir)) {
+        return `Topic already exists ${domain}\\${runtime}\\${value}`
+      }
+    },
+  })
+
+  if (p.isCancel(topic)) return p.cancel("Cancelled")
+
+  return { domain, runtime, topic }
 }
 
-if (!isRuntime(domain, runtime)) {
-  console.error(
-    `Invalid runtime "${runtime}" for ${domain}. Use: ${validRuntimes[domain].join(", ")}`
-  )
-  process.exit(1)
+// Main workflow: collect common options, then delegate by domain.
+const main = async () => {
+  p.intro("Create a new practice topic")
+
+  const options = await promptCommonOptions()
+
+  // Stop if the user cancels any of the common prompts.
+  if (!options) return
+
+  const { domain, runtime, topic } = options
+
+  if (domain === "frontend") {
+    await createFrontendTopic(runtime as FrontendRuntime, topic)
+    return
+  }
+
+  await createBackendTopic({
+    domain: "backend",
+    runtime: runtime as BackendRuntime,
+    topic,
+  })
 }
 
-if (db !== undefined && !isDatabase(db)) {
-  console.error(`Invalid database "${db}". Use: ${databases.join(", ")}`)
-  process.exit(1)
-}
-
-const nameParts = [topic, framework, db].filter(Boolean)
-const folderName = nameParts.join("-") // rate-limiting-hono-postgres
-
-const dir = path.join(domain, runtime, folderName)
-fs.mkdirSync(dir, { recursive: true })
-
-const ext = domain === "backend" ? "ts" : runtime === "react" ? "tsx" : "ts"
-
-fs.writeFileSync(
-  path.join(dir, "README.md"),
-  `# ${topic}
-
-tags: ${domain}${framework ? `, ${framework}` : ""}${db ? `, ${db}` : ""}
-
-runtime: ${runtime}
-
-framework: ${framework ?? "-"}
-
-database: ${db ?? "-"}
-
-date: ${new Date().toISOString().slice(0, 10)}
-
-## What
-
-## Snippet
-
-See demo.${ext}
-
-## When to use
-`
-)
-
-// fs.writeFileSync(path.join(dir, `demo.${ext}`), "")
-
-console.log(`Created ${dir}`)
+main()

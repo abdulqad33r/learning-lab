@@ -9,5 +9,6 @@
 ### react
 
 - [debouncing](frontend/react/debouncing/README.md) — frontend
+- [throttling](frontend/react/throttling/README.md) — frontend
 
 ## backend
