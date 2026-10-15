@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import useThrottle from "./useThrottle"
 
-export function useThrottledValue<T>(value: T, delay: number): T {
+const useThrottledValue = <T>(value: T, delay: number): T => {
   const [throttled, setThrottled] = useState(value)
   const update = useThrottle((v: T) => setThrottled(v), delay)
 
@@ -12,3 +12,5 @@ export function useThrottledValue<T>(value: T, delay: number): T {
 
   return throttled
 }
+
+export default useThrottledValue
